@@ -2,13 +2,14 @@ require("dotenv").config();
 const { MongoClient } = require("mongodb");
 const functions = require("@google-cloud/functions-framework");
 
-const uri = process.env.MONGODB_UR;
+const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
 functions.http("helloHttp", async (req, res) => {
   const authHeader = req.headers.authorization;
   const collectionName = req.body.collection;
-  const aggregationPipeline = req.body.aggregation; // Usar um pipeline de agregação
+  const query = req.body.query;
+  const aggregationPipeline = req.body.aggregation;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Not authorized!" });
@@ -20,24 +21,32 @@ functions.http("helloHttp", async (req, res) => {
     return res.status(401).json({ message: "Not authorized" });
   }
 
-  if (!collectionName || !aggregationPipeline) {
-    // Certifique-se de que o pipeline de agregação foi passado
+  if (!collectionName) {
     return res.status(400).json({
       message:
-        "It is necessary to pass collection and aggregation pipeline in the body of the request",
+        "It is necessary to pass the collection in the body of the request",
     });
   }
 
   try {
     await client.connect();
     const collection = client.db("test").collection(collectionName);
-    const data = await collection.aggregate(aggregationPipeline).toArray(); // Use o método aggregate()
+    let data;
 
-    res.json({
-      data,
-    });
+    if (query) {
+      data = await collection.find(query).toArray();
+    } else if (aggregationPipeline) {
+      data = await collection.aggregate(aggregationPipeline).toArray();
+    } else {
+      return res.status(400).json({
+        message:
+          "No query or aggregation pipeline provided in the request body",
+      });
+    }
+
+    res.json({ data });
   } catch (error) {
-    console.error("Error executing aggregation query:", error);
+    console.error("Error with database operation:", error);
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
