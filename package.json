@@ -1,0 +1,17 @@
+{
+  "name": "google-cloud-functions-mongodb-query",
+  "version": "1.0.0",
+  "description": "Este projeto demonstra como criar uma API utilizando Google Cloud Functions que se conecta a um banco de dados MongoDB hospedado no MongoDB Atlas. O objetivo é fornecer uma interface HTTP simples para executar consultas de leitura em uma coleção específica do MongoDB, utilizando autenticação baseada em token para segurança.",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=helloHttp"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.5.0"
+  }
+}
