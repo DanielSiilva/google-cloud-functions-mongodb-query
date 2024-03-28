@@ -11,6 +11,9 @@ functions.http("helloHttp", async (req, res) => {
   const query = req.body.query;
   const aggregationPipeline = req.body.aggregation;
 
+  console.log("🚀 ~ query:", query ? query : null);
+  console.log("🚀  aggregationPipeline:", aggregationPipeline);
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Not authorized!" });
   }

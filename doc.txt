@@ -1,0 +1,19 @@
+//Exemple body
+
+ //Aggregation
+
+    {
+        "collection": "heros",
+        "aggregation": [
+            { "$match": { "power": "God of Thunder" } },
+            { "$count": "number_of_heros_with_power" }
+        ]
+    }
+
+
+// Query
+
+    {
+        "collection": "heros",
+        "query": {"power":"God of Thunder"}
+    }
